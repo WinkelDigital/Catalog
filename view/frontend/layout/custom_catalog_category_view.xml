@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="empty" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+      <block class="Magento\Framework\Pricing\Render" name="product.price.render.default">
+          <arguments>
+              <argument name="price_render_handle" xsi:type="string">catalog_product_prices</argument>
+              <argument name="use_link_for_as_low_as" xsi:type="boolean">true</argument>
+              <!-- set "override" configuration settings here -->
+          </arguments>
+      </block>
+    <referenceContainer name="page.wrapper">
+      <block class="Magento\Catalog\Block\Product\ListProduct" name="category.products.list" as="product_list" template="Winkel_Catalog::html/product/product_only.phtml">
+        <block class="Magento\Framework\View\Element\RendererList" name="category.product.type.details.renderers" as="details.renderers">
+            <block class="Magento\Framework\View\Element\Template" name="category.product.type.details.renderers.default" as="default"/>
+        </block>
+        <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product_list_toolbar" template="Magento_Catalog::product/list/toolbar.phtml">
+            <block class="Magento\Theme\Block\Html\Pager" name="product_list_toolbar_pager"/>
+        </block>
+      </block>
+    </referenceContainer>
+
+    </body>
+</page>

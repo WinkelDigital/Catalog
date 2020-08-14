@@ -1,0 +1,4 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Catalog\Controller\Category\View" type="Winkel\Catalog\Controller\Category\View" />
+    <preference for="Magento\Catalog\Block\Product\ListProduct" type="Winkel\Catalog\Block\Product\ListProduct"/>
+</config>
