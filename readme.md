@@ -1,3 +1,5 @@
+### Magento Ajax catalog load
+
 ## How to use
 
 create a directory under app/code with name Winkel
