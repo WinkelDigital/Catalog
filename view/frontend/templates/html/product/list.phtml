@@ -32,7 +32,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
     $pos = $block->getPositioned();
     ?>
     <div class="products wrapper  <?= /* @escapeNotVerified */ $viewMode ?> products-<?= /* @escapeNotVerified */ $viewMode ?>">
-        <ol class="products product-item-filtered mx-0 list items product-items">
+        <ol data-mage-init='{"Winkel_Catalog/js/product-loader":{}}' class="products product-item-filtered mx-0 list items product-items">
         </ol>
     </div>
     <div class="text-center mb-5" style="display:none" id="pager-wrapper">
@@ -49,109 +49,6 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
 
 <script type="text/javascript">
   require(['jquery'], function($){
-    let page = 0;
-    const loadProduct = function(url, options = {},cleanFirst = false){
 
-      const resultElWrapper = $('.product-item-filtered')
-      if(cleanFirst){
-        resultElWrapper.empty()
-      }
-      const loadTrigger = $('#product-load-trigger')
-      loadTrigger.attr('disabled','disabled')
-      loadTrigger.text('Loading....')
-      resultElWrapper.addClass('loading')
-      const data = Object.assign({
-        '__a':1
-      },options)
-      return new Promise((resolve,reject)=>{
-        $.ajax({
-          url,
-          type:'get',
-          data
-        }).then(result =>{
-          $('.filter-current').remove()
-          $('.filter-content').prepend(result.state)
-          loadTrigger.removeAttr('disabled')
-          loadTrigger.text(loadTrigger.data('text'))
-          resultElWrapper.append(result.html)
-          resultElWrapper.removeClass('loading')
-          const totitem = result.total
-          const page = result.page
-          const perpage = result.limit
-          const prodToShown = perpage * page
-
-          if(prodToShown >= totitem){
-            $('#product-load-trigger').hide()
-          }else{
-            $('#product-load-trigger').show()
-          }
-
-
-          $('#num-total-products').text(totitem)
-          if((perpage * page) >= totitem){
-            $('#load-more-prod').hide()
-          }
-          $('#num-shown-prods').text(prodToShown > totitem?totitem:prodToShown)
-          const percentage = prodToShown/totitem * 100
-          console.log(percentage);
-          $('#prod-load-status-val').css('width', (percentage > 100 ? 100:percentage) +'%')
-
-          resultElWrapper.find(".product-image-photo").each(function(){
-            $(this).attr('src',$(this).data('src'))
-          })
-          $('#pager-wrapper').show()
-          resolve(result)
-        })
-      })
-    }
-
-    var baseUrl = window.location.href
-    var curFilter = parseParams(baseUrl)
-    $(document).ready(function(){
-       loadProduct(baseUrl).then(function(result){
-         page = result.page
-       })
-    })
-    $('#product-load-trigger').click(function(e){
-       e.preventDefault()
-       loadProduct(baseUrl,Object.assign(curFilter,{
-         'p':page+1
-       })).then(function(result){
-         page = result.page
-       })
-    })
-    $('.filter-options-content a').click(function(e){
-       e.preventDefault()
-       curFilter = Object.assign({},
-         curFilter,
-         parseParams($(this).attr('href')),
-         {'p':1}
-       );
-       loadProduct($(this).attr('href'),curFilter, true).then(function(result){
-         page = result.page
-       })
-    })
-    $('.filter-content').on('click','.filter-current a', function(e){
-      e.preventDefault()
-      curFilter = Object.assign(parseParams($(this).attr('href')),{
-        'p':1
-      })
-      loadProduct($(this).attr('href'),curFilter, true).then(function(result){
-        page = result.page
-      })
-    })
-    function parseParams(url){
-      const params = url.split('?')
-      if(params.length > 1){
-        return JSON.parse('{"' + decodeURI(params[1].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-      }
-      return {}
-    }
-    function mergeData(src1,src2){
-      return Object.assign({},
-        parseParams(src1),
-        parseParams(src2)
-      )
-    }
   })
 </script>
