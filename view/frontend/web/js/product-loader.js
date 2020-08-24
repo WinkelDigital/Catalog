@@ -11,7 +11,7 @@ define(['jquery'], function($){
       let page = 0;
       const loadProduct = function(url, options = {},cleanFirst = false){
 
-        const resultElWrapper = $('.product-item-filtered')
+        const resultElWrapper = $(element)
         if(cleanFirst){
           resultElWrapper.empty()
         }

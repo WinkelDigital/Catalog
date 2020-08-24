@@ -62,7 +62,7 @@ class View extends \Magento\Catalog\Controller\Category\View implements HttpGetA
      */
     public function execute()
     {
-      if($this->getRequest()->getParam('__a')){
+      if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
         $category = $this->_initCategory();
         $result = $this->resultJsonFactory->create();
         return $result->setData($this->getProdsOnly());
@@ -84,15 +84,7 @@ class View extends \Magento\Catalog\Controller\Category\View implements HttpGetA
       $layer = $block->addBlock('Magento\LayeredNavigation\Block\Navigation\Category','tz_custom_layer','tz_custom_list');
       $layer->setTemplate('Magento_LayeredNavigation::layer/view.phtml');
       $state = $block->addBlock('Magento\LayeredNavigation\Block\Navigation\State','state','tz_custom_layer');
-      // $filters = [];
-      // foreach ($state->getActiveFilters() as $kf => $filter) {
-      //   $clearLinkUrl = $filter->getClearLinkUrl()?$filter->getClearLinkUrl():$filter->getRemoveUrl();
-      //   $filters[$kf] = [
-      //     'name' => $filter->getName() . ' ' . $filter->getLabel(),
-      //     'removeUrl' => $clearLinkUrl
-      //   ];
-      // }
-      // $state->setTemplate('Magento_LayeredNavigation::layer/state.phtml');
+
 
       return [
         'page'=>$pager->getCurrentPage(),
