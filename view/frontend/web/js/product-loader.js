@@ -9,25 +9,23 @@ define(['jquery'], function($){
     }
     return function(config, element){
       let page = 0;
-      const loadProduct = function(url, options = {},cleanFirst = false){
-
+      const loadProduct = function(url, options = {}, cleanFirst = false, pushState = false){
         const resultElWrapper = $(element)
         if(cleanFirst){
           resultElWrapper.empty()
         }
-        const loadTrigger = $('#product-load-trigger')
+        const loadTrigger = $(config.pager.moreButton)
         loadTrigger.attr('disabled','disabled')
         loadTrigger.text('Loading....')
         resultElWrapper.addClass('loading')
-        const data = Object.assign({
-          '__a':1
-        },options)
+        const data = options
         return new Promise((resolve,reject)=>{
           $.ajax({
             url,
             type:'get',
             data
-          }).then(result =>{
+          }).then(function(result){
+            history.pushState({path:this.url,data},'',this.url)
             $('.filter-current').remove()
             $('.filter-content').prepend(result.state)
             loadTrigger.removeAttr('disabled')
@@ -38,12 +36,19 @@ define(['jquery'], function($){
             const page = result.page
             const perpage = result.limit
             const prodToShown = perpage * page
-
-            if(prodToShown >= totitem){
-              $('#product-load-trigger').hide()
-            }else{
-              $('#product-load-trigger').show()
+            $('#num-total-products').text(totitem)
+            if((perpage * page) >= totitem){
+               $('#load-more-prod').hide()
             }
+            $('#num-shown-prods').text(prodToShown > totitem?totitem:prodToShown)
+            const percentage = prodToShown/totitem * 100
+             $('#prod-load-status-val').css('width', (percentage > 100 ? 100:percentage) +'%')
+            if(prodToShown >= totitem){
+              $(config.pager.moreButton).hide()
+            }else{
+              $(config.pager.moreButton).show()
+            }
+            $(config.pager.wrapperEl).show()
             resolve(result)
           })
         })
@@ -51,12 +56,16 @@ define(['jquery'], function($){
 
       var baseUrl = window.location.href
       var curFilter = parseParams(baseUrl)
+
       $(document).ready(function(){
-         loadProduct(baseUrl).then(function(result){
-           page = result.page
-         })
+        loadProduct(baseUrl).then(function(result){
+          page = result.page
+        })
+        window.onpopstate = function() {
+          console.log('testttttttt');
+        };
       })
-      $('#product-load-trigger').click(function(e){
+      $(config.pager.moreButton).click(function(e){
          e.preventDefault()
          loadProduct(baseUrl,Object.assign(curFilter,{
            'p':page+1
@@ -71,7 +80,7 @@ define(['jquery'], function($){
            parseParams($(this).attr('href')),
            {'p':1}
          );
-         loadProduct($(this).attr('href'),curFilter, true).then(function(result){
+         loadProduct($(this).attr('href'),curFilter, true, true).then(function(result){
            page = result.page
          })
       })
@@ -80,7 +89,7 @@ define(['jquery'], function($){
         curFilter = Object.assign(parseParams($(this).attr('href')),{
           'p':1
         })
-        loadProduct($(this).attr('href'),curFilter, true).then(function(result){
+        loadProduct($(this).attr('href'),curFilter, true, true).then(function(result){
           page = result.page
         })
       })

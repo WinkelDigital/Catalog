@@ -32,7 +32,15 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
     $pos = $block->getPositioned();
     ?>
     <div class="products wrapper  <?= /* @escapeNotVerified */ $viewMode ?> products-<?= /* @escapeNotVerified */ $viewMode ?>">
-        <ol data-mage-init='{"Winkel_Catalog/js/product-loader":{}}' class="products product-item-filtered mx-0 list items product-items">
+        <ol data-mage-init='{"Winkel_Catalog/js/product-loader":{
+          "pager":{
+            "wrapperEl":"#pager-wrapper",
+            "totalCount":"#num-total-prods",
+            "showCount":"#num-shown-prods",
+            "shownEl":"#prod-load-status-val",
+            "moreButton":"#product-load-trigger"
+          }
+        }}' class="products product-item-filtered mx-0 list items product-items">
         </ol>
     </div>
     <div class="text-center mb-5" style="display:none" id="pager-wrapper">
